@@ -84,24 +84,27 @@ public class Rds<T extends IRdsContent> {
 	// getContent
 	//
 
-	public String toContents() {
+	public List<String> toContents() {
 		if (this.isRoot()) {
 			return this.collectContents();
-		} else if (!this.item.isLeaf()) {
-			return this.item.getContent(this.level, this.collectContents());
 		} else {
-			return this.item.getContent(this.level, "");
+			Rds<T> rds = this;
+			List<String> contents = (this.item.isLeaf()) ? new ArrayList<String>() : rds.collectContents();
+
+			return new ArrayList<String>() {
+				{ add(rds.item.getContent(rds.level, contents)); }
+			};
 		}
 	}
 
-	private String collectContents() {
-		StringBuffer csb = new StringBuffer();
+	private List<String> collectContents() {
+		List<String> contents = new ArrayList<>();
 
 		for (Rds<T> item : this.items) {
-			csb.append(item.toContents());
+			contents.addAll(item.toContents());
 		}
 
-		return csb.toString();
+		return contents;
 	}
 
 	//

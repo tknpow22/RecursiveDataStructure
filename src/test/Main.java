@@ -1,8 +1,13 @@
 package test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rds.Rds;
+import test.Files.AccessibleFile;
+import test.Files.Directory;
+import test.Files.DiskItem;
+import test.Files.File;
 import test.Menus.AccessibleLink;
 import test.Menus.Link;
 import test.Menus.Menu;
@@ -10,7 +15,13 @@ import test.Menus.MenuItem;
 
 public class Main {
 
-	public static void main(String[] args) {
+	private void printList(List<String> list) {
+		list.forEach(System.out::print);
+	}
+
+	private void test1() {
+
+		System.out.println("test1");
 
 		Rds<MenuItem> root = new Rds<>();
 
@@ -49,7 +60,7 @@ public class Main {
 		root.add(new Rds<MenuItem>(0, new Link("rootlink2", "http://rootlink2")));
 
 		System.out.println(root.toString());
-		System.out.println(root.toContents());
+		printList(root.toContents());
 
 		AccessibleLink accessibleLink = new AccessibleLink(new ArrayList<String>() {
 			{ add("rootmenu1-link1"); }
@@ -61,6 +72,75 @@ public class Main {
 		Rds<MenuItem> accessibleRoot = root.getAccessible(accessibleLink);
 
 		System.out.println(accessibleRoot.toString());
-		System.out.println(accessibleRoot.toContents());
+		printList(accessibleRoot.toContents());
+	}
+
+	private void test2() {
+
+		System.out.println("test2");
+
+		Rds<DiskItem> root = new Rds<>();
+
+		root.add(new Rds<DiskItem>(0, new Directory("rootdir1")));
+		{
+			root.add(new Rds<DiskItem>(1, new File("rootdir1-file1")));
+			root.add(new Rds<DiskItem>(1, new File("rootdir1-file2")));
+		}
+
+		root.add(new Rds<DiskItem>(0, new Directory("rootdir2")));
+		{
+			root.add(new Rds<DiskItem>(1, new File("rootdir2-file1")));
+			root.add(new Rds<DiskItem>(1, new Directory("rootdir2-dir1")));
+			{
+				root.add(new Rds<DiskItem>(2, new Directory("rootdir2-dir1-dir1")));
+				{
+					root.add(new Rds<DiskItem>(3, new File("rootdir2-dir1-dir1-file1")));
+					root.add(new Rds<DiskItem>(3, new File("rootdir2-dir1-dir1-file2")));
+				}
+			}
+		}
+
+		root.add(new Rds<DiskItem>(0, new File("rootfile1")));
+
+		root.add(new Rds<DiskItem>(0, new Directory("rootdir3")));
+		{
+			root.add(new Rds<DiskItem>(1, new Directory("rootdir3-dir1")));
+			{
+				root.add(new Rds<DiskItem>(2, new Directory("rootdir3-dir1-dir1")));
+				{
+					root.add(new Rds<DiskItem>(3, new File("rootdir3-dir1-dir1-file1")));
+				}
+			}
+		}
+
+		root.add(new Rds<DiskItem>(0, new File("rootfile2")));
+
+		System.out.println(root.toString());
+		printList(root.toContents());
+
+		AccessibleFile accessibleFile = new AccessibleFile(new ArrayList<String>() {
+			{ add("rootdir1-file1"); }
+			{ add("rootdir1-file2"); }
+			{ add("rootfile1"); }
+			{ add("rootdir3-dir1-dir1-file1"); }
+		});
+
+		Rds<DiskItem> accessibleRoot = root.getAccessible(accessibleFile);
+
+		System.out.println(accessibleRoot.toString());
+		printList(accessibleRoot.toContents());
+	}
+
+	public static void main(String[] args) {
+
+		try {
+			Main self = new Main();
+
+			self.test1();
+			self.test2();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 }

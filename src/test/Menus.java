@@ -1,6 +1,7 @@
 package test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import rds.IAccessibleLeaf;
 import rds.IRdsContent;
@@ -48,19 +49,21 @@ public class Menus {
 
 	static class Menu extends MenuItem {
 
-		private static String[] templates = new String[] {
-			"<p class='m0'>%d:%s</p><div>%s</div>",
-			"<p class='m1'>%d:%s</p><div>%s</div>",
-			"<p class='m2'>%d:%s</p><div>%s</div>",
-		};
-
 		public Menu(String name) {
 			super(name, false);
 		}
 
+		private static String[] templates = new String[] {
+				"<p class='m0'>%d:%s</p><div>%s</div>",
+				"<p class='m1'>%d:%s</p><div>%s</div>",
+				"<p class='m2'>%d:%s</p><div>%s</div>",
+			};
+
 		@Override
-		public String getContent(int level, String child) {
-			return String.format(templates[level], level, this.name, child);
+		public String getContent(int level, List<String> children) {
+
+
+			return String.format(templates[level], level, this.name, children.stream().collect(Collectors.joining()));
 		}
 	}
 
@@ -81,7 +84,7 @@ public class Menus {
 		};
 
 		@Override
-		public String getContent(int level, String child) {
+		public String getContent(int level, List<String> children) {
 			return String.format(templates[level], this.link, level, this.name);
 		}
 	}
