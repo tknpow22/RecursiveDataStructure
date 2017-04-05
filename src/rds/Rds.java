@@ -14,6 +14,10 @@ public class Rds<T extends IRdsContent> {
 	private T item;
 	private List<Rds<T>> items;
 
+	//
+	// constructor
+	//
+
 	public Rds() {
 		this(ROOT_LEVEL, null);
 	}
@@ -24,18 +28,17 @@ public class Rds<T extends IRdsContent> {
 		this.items = new ArrayList<>();
 	}
 
-	public Rds<T> getAccessible(IAccessibleLeaf<T> accessibleLeaf) {
+	//
+	// isRoot
+	//
 
-		if (this.isRoot()) {
-			Rds<T> rdsRoot = this.collectAccessible(accessibleLeaf);
-			return (rdsRoot.items.size() == 0) ? new Rds<T>() : rdsRoot;
-		} else if (!this.item.isLeaf()) {
-			Rds<T> rdsRoot = this.collectAccessible(accessibleLeaf);
-			return (rdsRoot.items.size() == 0) ? null : rdsRoot;
-		} else {
-			return accessibleLeaf.isAccessible(this.item) ? this : null;
-		}
+	public boolean isRoot() {
+		return this.level == ROOT_LEVEL;
 	}
+
+	//
+	// add
+	//
 
 	public void add(Rds<T> rdsNew) {
 		if (this.level + 1 == rdsNew.level) {
@@ -50,8 +53,20 @@ public class Rds<T extends IRdsContent> {
 		}
 	}
 
-	public boolean isRoot() {
-		return this.level == ROOT_LEVEL;
+	//
+	// getAccessible
+	//
+
+	public Rds<T> getAccessible(IAccessibleLeaf<T> accessibleLeaf) {
+		if (this.isRoot()) {
+			Rds<T> rdsRoot = this.collectAccessible(accessibleLeaf);
+			return (rdsRoot.items.size() == 0) ? new Rds<T>() : rdsRoot;
+		} else if (!this.item.isLeaf()) {
+			Rds<T> rdsRoot = this.collectAccessible(accessibleLeaf);
+			return (rdsRoot.items.size() == 0) ? null : rdsRoot;
+		} else {
+			return accessibleLeaf.isAccessible(this.item) ? this : null;
+		}
 	}
 
 	private Rds<T> collectAccessible(IAccessibleLeaf<T> accessibleLeaf) {
@@ -63,6 +78,30 @@ public class Rds<T extends IRdsContent> {
 			}
 		}
 		return rdsRoot;
+	}
+
+	//
+	// getContent
+	//
+
+	public String getContent() {
+		if (this.isRoot()) {
+			return this.collectContent();
+		} else if (!this.item.isLeaf()) {
+			return this.item.toContent(this.level, this.collectContent());
+		} else {
+			return this.item.toContent(this.level, "");
+		}
+	}
+
+	private String collectContent() {
+		StringBuffer csb = new StringBuffer();
+
+		for (Rds<T> item : this.items) {
+			csb.append(item.getContent());
+		}
+
+		return csb.toString();
 	}
 
 	//

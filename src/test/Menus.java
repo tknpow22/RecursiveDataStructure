@@ -21,14 +21,18 @@ public class Menus {
 		}
 	}
 
-	static class MenuItem implements IRdsContent {
+	static abstract class MenuItem implements IRdsContent {
 
-		private String name;
-		private boolean page;
+		protected String name;
+		protected boolean page;
 
-		public MenuItem(String name, boolean page) {
+		protected MenuItem(String name, boolean page) {
 			this.name = name;
 			this.page = page;
+		}
+
+		public String getName() {
+			return this.name;
 		}
 
 		@Override
@@ -40,23 +44,45 @@ public class Menus {
 		public boolean isLeaf() {
 			return this.page;
 		}
-
-		public String getName() {
-			return this.name;
-		}
 	}
 
 	static class Menu extends MenuItem {
 
+		private static String[] templates = new String[] {
+			"<p class='m0'>%d:%s</p><div>%s</div>",
+			"<p class='m1'>%d:%s</p><div>%s</div>",
+			"<p class='m2'>%d:%s</p><div>%s</div>",
+		};
+
 		public Menu(String name) {
 			super(name, false);
+		}
+
+		@Override
+		public String toContent(int level, String child) {
+			return String.format(templates[level], level, this.name, child);
 		}
 	}
 
 	static class Link extends MenuItem {
 
-		public Link(String name) {
+		private String link;
+
+		public Link(String name, String link) {
 			super(name, true);
+			this.link = link;
+		}
+
+		private static String[] templates = new String[] {
+			"<a class='l0' href='%s'>%d:%s</a>",
+			"<a class='l1' href='%s'>%d:%s</a>",
+			"<a class='l2' href='%s'>%d:%s</a>",
+			"<a class='l3' href='%s'>%d:%s</a>",
+		};
+
+		@Override
+		public String toContent(int level, String child) {
+			return String.format(templates[level], this.link, level, this.name);
 		}
 	}
 }
