@@ -24,7 +24,7 @@ public class Rds<T extends IRdsContent> {
 		this.items = new ArrayList<>();
 	}
 
-	public Rds<T> getAccessible(AccessibleLeaf<T> accessibleLeaf) {
+	public Rds<T> getAccessible(IAccessibleLeaf<T> accessibleLeaf) {
 
 		if (this.isRoot() || !this.item.isLeaf()) {
 			Rds<T> rdsRoot = new Rds<>(this.level, this.item);

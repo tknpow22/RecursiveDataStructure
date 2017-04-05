@@ -2,12 +2,12 @@ package test;
 
 import java.util.List;
 
-import rds.AccessibleLeaf;
+import rds.IAccessibleLeaf;
 import rds.IRdsContent;
 
 public class Menus {
 
-	static class AccessibleLink implements AccessibleLeaf<MenuItem> {
+	static class AccessibleLink implements IAccessibleLeaf<MenuItem> {
 
 		private List<String> accessibleLinkList;
 
