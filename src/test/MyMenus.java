@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import rds.IAccessibleLeaf;
 import rds.IRdsContent;
 
-public class Menus {
+public class MyMenus {
 
 	static class AccessibleLink implements IAccessibleLeaf<MenuItem> {
 
@@ -38,7 +38,7 @@ public class Menus {
 
 		@Override
 		public String toString() {
-			return String.format("name: %s, page: %s", this.name, this.page);
+			return String.format("name:%s|page:%s", this.name, this.page);
 		}
 
 		@Override
@@ -60,10 +60,8 @@ public class Menus {
 			};
 
 		@Override
-		public String getContent(int level, List<String> children) {
-
-
-			return String.format(templates[level], level, this.name, children.stream().collect(Collectors.joining()));
+		public String getContent(int level, List<String> childContents) {
+			return String.format(templates[level], level, this.name, childContents.stream().collect(Collectors.joining()));
 		}
 	}
 
@@ -84,7 +82,7 @@ public class Menus {
 		};
 
 		@Override
-		public String getContent(int level, List<String> children) {
+		public String getContent(int level, List<String> childContents) {
 			return String.format(templates[level], this.link, level, this.name);
 		}
 	}

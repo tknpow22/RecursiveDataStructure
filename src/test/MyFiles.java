@@ -7,19 +7,22 @@ import java.util.stream.IntStream;
 import rds.IAccessibleLeaf;
 import rds.IRdsContent;
 
-public class Files {
+public class MyFiles {
 
 	static class AccessibleFile implements IAccessibleLeaf<DiskItem> {
 
 		private List<String> accessibleFileList;
+		private int size;
 
-		public AccessibleFile(List<String> accessibleFileList) {
+		public AccessibleFile(List<String> accessibleFileList, int size) {
 			this.accessibleFileList = accessibleFileList;
+			this.size = size;
 		}
 
 		@Override
 		public boolean isAccessible(DiskItem rdsContent) {
-			return this.accessibleFileList.contains(rdsContent.getName());
+			return this.accessibleFileList.contains(rdsContent.getName())
+				 || this.size < rdsContent.getSize();
 		}
 	}
 
@@ -27,19 +30,25 @@ public class Files {
 
 		protected String name;
 		protected boolean file;
+		protected int size;
 
-		protected DiskItem(String name, boolean file) {
+		protected DiskItem(String name, boolean file, int size) {
 			this.name = name;
 			this.file = file;
+			this.size = size;
 		}
 
 		public String getName() {
 			return this.name;
 		}
 
+		public int getSize() {
+			return this.size;
+		}
+
 		@Override
 		public String toString() {
-			return String.format("name: %s, file: %s", this.name, this.file);
+			return String.format("name:%s|file:%s|size:%d", this.name, this.file, this.size);
 		}
 
 		@Override
@@ -55,15 +64,15 @@ public class Files {
 	static class Directory extends DiskItem {
 
 		protected Directory(String name) {
-			super(name, false);
+			super(name, false, 0);
 		}
 
 		@Override
-		public String getContent(int level, List<String> children) {
+		public String getContent(int level, List<String> childContents) {
 			StringBuffer sb = new StringBuffer();
-			sb.append(String.format("\n%s<DIR:%s>", this.tab(level), this.name));
-			for (String child : children) {
-				sb.append(String.format("%s", child));
+			sb.append(String.format("%s<DIR:%s>\n", this.tab(level), this.name));
+			for (String childContent : childContents) {
+				sb.append(String.format("%s", childContent));
 			}
 
 			return sb.toString();
@@ -72,13 +81,13 @@ public class Files {
 
 	static class File extends DiskItem {
 
-		protected File(String name) {
-			super(name, true);
+		protected File(String name, int size) {
+			super(name, true, size);
 		}
 
 		@Override
-		public String getContent(int level, List<String> children) {
-			return String.format("\n%s<FILE:%s>", this.tab(level), this.name);
+		public String getContent(int level, List<String> childContents) {
+			return String.format("%s<FILE:%s:%d>\n", this.tab(level), this.name, this.size);
 		}
 	}
 }

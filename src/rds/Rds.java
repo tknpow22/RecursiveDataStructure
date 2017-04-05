@@ -59,17 +59,15 @@ public class Rds<T extends IRdsContent> {
 
 	public Rds<T> getAccessible(IAccessibleLeaf<T> accessibleLeaf) {
 		if (this.isRoot()) {
-			Rds<T> rdsRoot = this.collectAccessible(accessibleLeaf);
-			return (rdsRoot.items.size() == 0) ? new Rds<T>() : rdsRoot;
-		} else if (!this.item.isLeaf()) {
-			Rds<T> rdsRoot = this.collectAccessible(accessibleLeaf);
-			return (rdsRoot.items.size() == 0) ? null : rdsRoot;
-		} else {
+			return this.collectAccessible(accessibleLeaf, new Rds<T>());
+		} else if (this.item.isLeaf()) {
 			return accessibleLeaf.isAccessible(this.item) ? this : null;
+		} else {
+			return this.collectAccessible(accessibleLeaf, null);
 		}
 	}
 
-	private Rds<T> collectAccessible(IAccessibleLeaf<T> accessibleLeaf) {
+	private Rds<T> collectAccessible(IAccessibleLeaf<T> accessibleLeaf, Rds<T> valueDefault) {
 		Rds<T> rdsRoot = new Rds<>(this.level, this.item);
 		for (Rds<T> crds : this.items) {
 			Rds<T> acsRds = crds.getAccessible(accessibleLeaf);
@@ -77,11 +75,11 @@ public class Rds<T extends IRdsContent> {
 				rdsRoot.items.add(acsRds);
 			}
 		}
-		return rdsRoot;
+		return (rdsRoot.items.size() == 0) ? valueDefault : rdsRoot;
 	}
 
 	//
-	// getContent
+	// toContents
 	//
 
 	public List<String> toContents() {
@@ -89,10 +87,10 @@ public class Rds<T extends IRdsContent> {
 			return this.collectContents();
 		} else {
 			Rds<T> rds = this;
-			List<String> contents = (this.item.isLeaf()) ? new ArrayList<String>() : rds.collectContents();
+			List<String> childContents = (this.item.isLeaf()) ? new ArrayList<String>() : rds.collectContents();
 
 			return new ArrayList<String>() {
-				{ add(rds.item.getContent(rds.level, contents)); }
+				{ add(rds.item.getContent(rds.level, childContents)); }
 			};
 		}
 	}
