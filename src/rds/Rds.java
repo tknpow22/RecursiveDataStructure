@@ -84,7 +84,7 @@ public class Rds<T extends IRdsContent> {
 	// getContent
 	//
 
-	public String getContent() {
+	public String toContents() {
 		if (this.isRoot()) {
 			return this.collectContent();
 		} else if (!this.item.isLeaf()) {
@@ -98,7 +98,7 @@ public class Rds<T extends IRdsContent> {
 		StringBuffer csb = new StringBuffer();
 
 		for (Rds<T> item : this.items) {
-			csb.append(item.getContent());
+			csb.append(item.toContents());
 		}
 
 		return csb.toString();

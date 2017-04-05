@@ -49,7 +49,7 @@ public class Main {
 		root.add(new Rds<MenuItem>(0, new Link("rootlink2", "http://rootlink2")));
 
 		System.out.println(root.toString());
-		System.out.println(root.getContent());
+		System.out.println(root.toContents());
 
 		AccessibleLink accessibleLink = new AccessibleLink(new ArrayList<String>() {
 			{ add("rootmenu1-link1"); }
@@ -59,7 +59,8 @@ public class Main {
 		});
 
 		Rds<MenuItem> accessibleRoot = root.getAccessible(accessibleLink);
+
 		System.out.println(accessibleRoot.toString());
-		System.out.println(accessibleRoot.getContent());
+		System.out.println(accessibleRoot.toContents());
 	}
 }
