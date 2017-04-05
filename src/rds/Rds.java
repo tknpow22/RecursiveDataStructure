@@ -86,15 +86,15 @@ public class Rds<T extends IRdsContent> {
 
 	public String toContents() {
 		if (this.isRoot()) {
-			return this.collectContent();
+			return this.collectContents();
 		} else if (!this.item.isLeaf()) {
-			return this.item.toContent(this.level, this.collectContent());
+			return this.item.toContent(this.level, this.collectContents());
 		} else {
 			return this.item.toContent(this.level, "");
 		}
 	}
 
-	private String collectContent() {
+	private String collectContents() {
 		StringBuffer csb = new StringBuffer();
 
 		for (Rds<T> item : this.items) {
