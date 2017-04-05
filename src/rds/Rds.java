@@ -26,21 +26,12 @@ public class Rds<T extends IRdsContent> {
 
 	public Rds<T> getAccessible(IAccessibleLeaf<T> accessibleLeaf) {
 
-		if (this.isRoot() || !this.item.isLeaf()) {
-			Rds<T> rdsRoot = new Rds<>(this.level, this.item);
-			for (Rds<T> crds : this.items) {
-				Rds<T> acsRds = crds.getAccessible(accessibleLeaf);
-				if (acsRds != null) {
-					rdsRoot.items.add(acsRds);
-				}
-			}
-
-			if (this.isRoot()) {
-				return (rdsRoot.items.size() == 0) ? new Rds<T>() : rdsRoot;
-			} else {
-				return (rdsRoot.items.size() == 0) ? null : rdsRoot;
-			}
-
+		if (this.isRoot()) {
+			Rds<T> rdsRoot = this.collectAccessible(accessibleLeaf);
+			return (rdsRoot.items.size() == 0) ? new Rds<T>() : rdsRoot;
+		} else if (!this.item.isLeaf()) {
+			Rds<T> rdsRoot = this.collectAccessible(accessibleLeaf);
+			return (rdsRoot.items.size() == 0) ? null : rdsRoot;
 		} else {
 			return accessibleLeaf.isAccessible(this.item) ? this : null;
 		}
@@ -62,6 +53,21 @@ public class Rds<T extends IRdsContent> {
 	public boolean isRoot() {
 		return this.level == ROOT_LEVEL;
 	}
+
+	private Rds<T> collectAccessible(IAccessibleLeaf<T> accessibleLeaf) {
+		Rds<T> rdsRoot = new Rds<>(this.level, this.item);
+		for (Rds<T> crds : this.items) {
+			Rds<T> acsRds = crds.getAccessible(accessibleLeaf);
+			if (acsRds != null) {
+				rdsRoot.items.add(acsRds);
+			}
+		}
+		return rdsRoot;
+	}
+
+	//
+	// toString
+	//
 
 	@Override
 	public String toString() {
