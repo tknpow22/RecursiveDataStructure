@@ -59,7 +59,7 @@ public class Menus {
 		}
 
 		@Override
-		public String toContent(int level, String child) {
+		public String getContent(int level, String child) {
 			return String.format(templates[level], level, this.name, child);
 		}
 	}
@@ -81,7 +81,7 @@ public class Menus {
 		};
 
 		@Override
-		public String toContent(int level, String child) {
+		public String getContent(int level, String child) {
 			return String.format(templates[level], this.link, level, this.name);
 		}
 	}
