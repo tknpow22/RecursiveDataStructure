@@ -1,7 +1,6 @@
 package test;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import rds.IAccessibleLeaf;
 import rds.IRdsContent;
@@ -10,15 +9,15 @@ public class MyMenus {
 
 	static class AccessibleLink implements IAccessibleLeaf<MenuItem> {
 
-		private List<String> accessibleLinkList;
+		private List<String> accessibleLinks;
 
-		public AccessibleLink(List<String> accessibleLinkList) {
-			this.accessibleLinkList = accessibleLinkList;
+		public AccessibleLink(List<String> accessibleLinks) {
+			this.accessibleLinks = accessibleLinks;
 		}
 
 		@Override
 		public boolean isAccessible(MenuItem rdsContent) {
-			return this.accessibleLinkList.contains(rdsContent.getName());
+			return this.accessibleLinks.contains(rdsContent.getName());
 		}
 	}
 
@@ -60,8 +59,8 @@ public class MyMenus {
 			};
 
 		@Override
-		public String getContent(int level, List<String> childContents) {
-			return String.format(templates[level], level, this.name, childContents.stream().collect(Collectors.joining()));
+		public String getContent(int level, String childContents) {
+			return String.format(templates[level], level, this.name, childContents);
 		}
 	}
 
@@ -82,7 +81,7 @@ public class MyMenus {
 		};
 
 		@Override
-		public String getContent(int level, List<String> childContents) {
+		public String getContent(int level, String childContents) {
 			return String.format(templates[level], this.link, level, this.name);
 		}
 	}

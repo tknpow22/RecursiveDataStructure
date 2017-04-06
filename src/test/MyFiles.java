@@ -1,6 +1,6 @@
 package test;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -11,17 +11,17 @@ public class MyFiles {
 
 	static class AccessibleFile implements IAccessibleLeaf<DiskItem> {
 
-		private List<String> accessibleFileList;
+		private Set<String> accessibleFiles;
 		private int size;
 
-		public AccessibleFile(List<String> accessibleFileList, int size) {
-			this.accessibleFileList = accessibleFileList;
+		public AccessibleFile(Set<String> accessibleFiles, int size) {
+			this.accessibleFiles = accessibleFiles;
 			this.size = size;
 		}
 
 		@Override
 		public boolean isAccessible(DiskItem rdsContent) {
-			return this.accessibleFileList.contains(rdsContent.getName())
+			return this.accessibleFiles.contains(rdsContent.getName())
 				 || this.size < rdsContent.getSize();
 		}
 	}
@@ -68,12 +68,10 @@ public class MyFiles {
 		}
 
 		@Override
-		public String getContent(int level, List<String> childContents) {
+		public String getContent(int level, String childContents) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(String.format("%s<DIR:%s>\n", this.tab(level), this.name));
-			for (String childContent : childContents) {
-				sb.append(String.format("%s", childContent));
-			}
+			sb.append(childContents);
 
 			return sb.toString();
 		}
@@ -86,7 +84,7 @@ public class MyFiles {
 		}
 
 		@Override
-		public String getContent(int level, List<String> childContents) {
+		public String getContent(int level, String childContents) {
 			return String.format("%s<FILE:%s:%d>\n", this.tab(level), this.name, this.size);
 		}
 	}

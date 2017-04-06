@@ -1,7 +1,7 @@
 package test;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 import rds.Rds;
 import test.MyFiles.AccessibleFile;
@@ -15,10 +15,8 @@ import test.MyMenus.MenuItem;
 
 public class Main {
 
-	private void printContents(List<String> contents) {
-		System.out.println("\n--");
-		contents.forEach(System.out::print);
-		System.out.println("\n--");
+	private void printContents(String contents) {
+		System.out.println(contents);
 	}
 
 	private void test1() {
@@ -128,7 +126,7 @@ public class Main {
 		printContents(root.toContents());
 
 		// collect accessible
-		AccessibleFile accessibleFile = new AccessibleFile(new ArrayList<String>() {
+		AccessibleFile accessibleFile = new AccessibleFile(new HashSet<String>() {
 			{ add("rootdir1-file1"); }
 			{ add("rootdir1-file2"); }
 			{ add("rootfile1"); }
