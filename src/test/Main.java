@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import rds.Rds;
-import test.MyFiles.AccessibleFile;
-import test.MyFiles.Directory;
-import test.MyFiles.DiskItem;
-import test.MyFiles.File;
-import test.MyMenus.AccessibleLink;
-import test.MyMenus.Link;
-import test.MyMenus.Menu;
-import test.MyMenus.MenuItem;
+import test.items.MyFiles.AccessibleFile;
+import test.items.MyFiles.Directory;
+import test.items.MyFiles.DiskItem;
+import test.items.MyFiles.File;
+import test.items.MyMenus.AccessibleLink;
+import test.items.MyMenus.MenuItem;
+import test.items.MyMenus.Link;
+import test.items.MyMenus.Menu;
 
 public class Main {
 

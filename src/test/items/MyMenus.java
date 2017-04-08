@@ -1,4 +1,4 @@
-package test;
+package test.items;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import rds.IRdsContent;
 
 public class MyMenus {
 
-	static class AccessibleLink implements IAccessibleLeaf<MenuItem> {
+	public static class AccessibleLink implements IAccessibleLeaf<MenuItem> {
 
 		private List<String> accessibleLinks;
 
@@ -21,7 +21,7 @@ public class MyMenus {
 		}
 	}
 
-	static abstract class MenuItem implements IRdsContent {
+	public static abstract class MenuItem implements IRdsContent {
 
 		protected String name;
 		protected boolean page;
@@ -36,17 +36,17 @@ public class MyMenus {
 		}
 
 		@Override
-		public String toString() {
-			return String.format("name:%s|page:%s", this.name, this.page);
-		}
-
-		@Override
 		public boolean isLeaf() {
 			return this.page;
 		}
+
+		@Override
+		public String toString() {
+			return String.format("name:%s|page:%s", this.name, this.page);
+		}
 	}
 
-	static class Menu extends MenuItem {
+	public static class Menu extends MenuItem {
 
 		public Menu(String name) {
 			super(name, false);
@@ -64,7 +64,7 @@ public class MyMenus {
 		}
 	}
 
-	static class Link extends MenuItem {
+	public static class Link extends MenuItem {
 
 		private String link;
 
