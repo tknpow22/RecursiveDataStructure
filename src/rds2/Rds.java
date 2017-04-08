@@ -11,7 +11,6 @@ public abstract class Rds {
 
 	private int level;
 
-	//private Rds item;
 	private List<Rds> items;
 
 	//
@@ -24,7 +23,6 @@ public abstract class Rds {
 
 	public Rds(int level) {
 		this.level = level;
-		//this.item = item;
 		this.items = new ArrayList<>();
 	}
 
@@ -68,7 +66,7 @@ public abstract class Rds {
 	}
 
 	private Rds collectAccessible(IAccessibleLeaf accessibleLeaf, Rds valueDefault) {
-		Rds rdsRoot = this.getInstance(this.level);//   new Rds<>(this.level, this.item);
+		Rds rdsRoot = this.getInstance(this.level);
 		for (Rds crds : this.items) {
 			Rds acsRds = crds.getAccessible(accessibleLeaf);
 			if (acsRds != null) {
