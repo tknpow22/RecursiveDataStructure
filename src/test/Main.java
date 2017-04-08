@@ -9,9 +9,9 @@ import test.items.MyFiles.Directory;
 import test.items.MyFiles.DiskItem;
 import test.items.MyFiles.File;
 import test.items.MyMenus.AccessibleLink;
-import test.items.MyMenus.MenuItem;
 import test.items.MyMenus.Link;
 import test.items.MyMenus.Menu;
+import test.items.MyMenus.MenuItem;
 
 public class Main {
 
@@ -144,6 +144,7 @@ public class Main {
 		try {
 
 			Main self = new Main();
+			System.out.println(self.getClass().getName());
 
 			self.test1();
 			self.test2();

@@ -142,6 +142,7 @@ public class Main {
 		try {
 
 			Main self = new Main();
+			System.out.println(self.getClass().getName());
 
 			self.test1();
 			self.test2();
