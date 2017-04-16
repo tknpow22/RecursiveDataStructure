@@ -7,100 +7,32 @@ import java.util.stream.IntStream;
 
 public class Rds<T extends IRdsContent> {
 
-	private static final int ROOT_LEVEL = -1;
-
-	private int level;
-
 	private T item;
-	private List<Rds<T>> items;
+	private List<Rds<T>> children;
 
 	//
 	// constructor
 	//
 
 	public Rds() {
-		this(ROOT_LEVEL, null);
+		this(null);
 	}
 
-	public Rds(int level, T item) {
-		this.level = level;
+	public Rds(T item) {
 		this.item = item;
-		this.items = new ArrayList<>();
+		this.children = new ArrayList<>();
 	}
 
 	//
-	// isRoot
+	// children operation
 	//
 
-	public boolean isRoot() {
-		return this.level == ROOT_LEVEL;
+	public T getItem() {
+		return this.item;
 	}
 
-	//
-	// add
-	//
-
-	public void add(Rds<T> rdsNew) {
-		if (this.level + 1 == rdsNew.level) {
-			this.items.add(rdsNew);
-		} else if (this.level < rdsNew.level) {
-			if (this.items.size() != 0) {
-				Rds<T> rds = this.items.get(this.items.size() - 1);
-				if (!rds.item.isLeaf()) {
-					rds.add(rdsNew);
-				}
-			}
-		}
-	}
-
-	//
-	// getAccessible
-	//
-
-	public Rds<T> getAccessible(IAccessibleLeaf<T> accessibleLeaf) {
-		if (this.isRoot()) {
-			return this.collectAccessible(accessibleLeaf, new Rds<T>());
-		} else if (this.item.isLeaf()) {
-			return accessibleLeaf.isAccessible(this.item) ? this : null;
-		} else {
-			return this.collectAccessible(accessibleLeaf, null);
-		}
-	}
-
-	private Rds<T> collectAccessible(IAccessibleLeaf<T> accessibleLeaf, Rds<T> valueDefault) {
-		Rds<T> rdsRoot = new Rds<>(this.level, this.item);
-		for (Rds<T> crds : this.items) {
-			Rds<T> acsRds = crds.getAccessible(accessibleLeaf);
-			if (acsRds != null) {
-				rdsRoot.items.add(acsRds);
-			}
-		}
-		return (rdsRoot.items.size() == 0) ? valueDefault : rdsRoot;
-	}
-
-	//
-	// toContents
-	//
-
-	public String toContents() {
-		if (this.isRoot()) {
-			return this.collectContents();
-		} else {
-			Rds<T> rds = this;
-			String childContents = (this.item.isLeaf()) ? "" : rds.collectContents();
-
-			return rds.item.getContent(rds.level, childContents);
-		}
-	}
-
-	private String collectContents() {
-		StringBuffer contents = new StringBuffer();
-
-		for (Rds<T> item : this.items) {
-			contents.append(item.toContents());
-		}
-
-		return contents.toString();
+	public List<Rds<T>> getChildren() {
+		return this.children;
 	}
 
 	//
@@ -115,11 +47,10 @@ public class Rds<T extends IRdsContent> {
 	private String toString(int indent) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(String.format("%s(\n", this.tab(indent)));
-		sb.append(String.format("%s<level:%d>", this.tab(indent+1), this.level));
-		sb.append(String.format("<%s>", (this.item == null) ? "" : this.item.toString()));
-		if (this.items.size() != 0) {
+		sb.append(String.format("%s<%s>", this.tab(indent+1), (this.item == null) ? "" : this.item.toString()));
+		if (this.children.size() != 0) {
 			sb.append(String.format("\n%s[\n", this.tab(indent+1)));
-			for (Rds<T> item : this.items) {
+			for (Rds<T> item : this.children) {
 				sb.append(item.toString(indent+2));
 			}
 			sb.append(String.format("%s]", this.tab(indent+1)));

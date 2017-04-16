@@ -2,22 +2,24 @@ package test.items;
 
 import java.util.List;
 
-import rds.IAccessibleLeaf;
+import rds.CollectAccessible;
 import rds.IRdsContent;
+import rds.Rds;
 
 public class MyMenus {
 
-	public static class AccessibleLink implements IAccessibleLeaf<MenuItem> {
+	public static class CollectAccessibleLink extends CollectAccessible<MenuItem> {
 
 		private List<String> accessibleLinks;
 
-		public AccessibleLink(List<String> accessibleLinks) {
+		public CollectAccessibleLink(Rds<MenuItem> rdsRoot, List<String> accessibleLinks) {
+			super(rdsRoot);
 			this.accessibleLinks = accessibleLinks;
 		}
 
 		@Override
-		public boolean isAccessible(MenuItem rdsContent) {
-			return this.accessibleLinks.contains(rdsContent.getName());
+		protected boolean isAccessible(MenuItem item) {
+			return this.accessibleLinks.contains(item.getName());
 		}
 	}
 

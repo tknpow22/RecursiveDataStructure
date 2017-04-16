@@ -4,25 +4,27 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import rds.IAccessibleLeaf;
+import rds.CollectAccessible;
 import rds.IRdsContent;
+import rds.Rds;
 
 public class MyFiles {
 
-	public static class AccessibleFile implements IAccessibleLeaf<DiskItem> {
+	public static class CollectAccessibleFile extends CollectAccessible<DiskItem> {
 
 		private Set<String> accessibleFiles;
 		private int size;
 
-		public AccessibleFile(Set<String> accessibleFiles, int size) {
+		public CollectAccessibleFile(Rds<DiskItem> rdsRoot, Set<String> accessibleFiles, int size) {
+			super(rdsRoot);
 			this.accessibleFiles = accessibleFiles;
 			this.size = size;
 		}
 
 		@Override
-		public boolean isAccessible(DiskItem rdsContent) {
-			return this.accessibleFiles.contains(rdsContent.getName())
-				 || this.size < rdsContent.getSize();
+		protected boolean isAccessible(DiskItem item) {
+			return this.accessibleFiles.contains(item.getName())
+				 || this.size < item.getSize();
 		}
 	}
 

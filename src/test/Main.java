@@ -3,12 +3,14 @@ package test;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import rds.CollectContents;
 import rds.Rds;
-import test.items.MyFiles.AccessibleFile;
+import rds.RdsBuilder;
+import test.items.MyFiles.CollectAccessibleFile;
 import test.items.MyFiles.Directory;
 import test.items.MyFiles.DiskItem;
 import test.items.MyFiles.File;
-import test.items.MyMenus.AccessibleLink;
+import test.items.MyMenus.CollectAccessibleLink;
 import test.items.MyMenus.Link;
 import test.items.MyMenus.Menu;
 import test.items.MyMenus.MenuItem;
@@ -25,58 +27,65 @@ public class Main {
 
 		// assemble tree
 		Rds<MenuItem> root = new Rds<>();
+		RdsBuilder<MenuItem> rdsBuilder = new RdsBuilder<>(root);
 		{
-			root.add(new Rds<MenuItem>(0, new Menu("rootmenu1")));
+			rdsBuilder.add(0, new Menu("rootmenu1"));
 			{
-				root.add(new Rds<MenuItem>(1, new Link("rootmenu1-link1", "http://rootmenu1-link1")));
-				root.add(new Rds<MenuItem>(1, new Link("rootmenu1-link2", "http://rootmenu1-link2")));
+				rdsBuilder.add(1, new Link("rootmenu1-link1", "http://rootmenu1-link1"));
+				rdsBuilder.add(1, new Link("rootmenu1-link2", "http://rootmenu1-link2"));
 			}
 
-			root.add(new Rds<MenuItem>(0, new Menu("rootmenu2")));
+			rdsBuilder.add(0, new Menu("rootmenu2"));
 			{
-				root.add(new Rds<MenuItem>(1, new Link("rootmenu2-link1", "http://rootmenu2-link1")));
-				root.add(new Rds<MenuItem>(1, new Menu("rootmenu2-menu1")));
+				rdsBuilder.add(1, new Link("rootmenu2-link1", "http://rootmenu2-link1"));
+				rdsBuilder.add(1, new Menu("rootmenu2-menu1"));
 				{
-					root.add(new Rds<MenuItem>(2, new Menu("rootmenu2-menu1-menu1")));
+					rdsBuilder.add(2, new Menu("rootmenu2-menu1-menu1"));
 					{
-						root.add(new Rds<MenuItem>(3, new Link("rootmenu2-menu1-menu1-link1", "http://rootmenu2-menu1-menu1-link1")));
-						root.add(new Rds<MenuItem>(3, new Link("rootmenu2-menu1-menu1-link2", "http://rootmenu2-menu1-menu1-link2")));
+						rdsBuilder.add(3, new Link("rootmenu2-menu1-menu1-link1", "http://rootmenu2-menu1-menu1-link1"));
+						rdsBuilder.add(3, new Link("rootmenu2-menu1-menu1-link2", "http://rootmenu2-menu1-menu1-link2"));
 					}
 				}
 			}
 
-			root.add(new Rds<MenuItem>(0, new Link("rootlink1", "http://rootlink1")));
+			rdsBuilder.add(0, new Link("rootlink1", "http://rootlink1"));
 
-			root.add(new Rds<MenuItem>(0, new Menu("rootmenu3")));
+			rdsBuilder.add(0, new Menu("rootmenu3"));
 			{
-				root.add(new Rds<MenuItem>(1, new Menu("rootmenu3-menu1")));
+				rdsBuilder.add(1, new Menu("rootmenu3-menu1"));
 				{
-					root.add(new Rds<MenuItem>(2, new Menu("rootmenu3-menu1-menu1")));
+					rdsBuilder.add(2, new Menu("rootmenu3-menu1-menu1"));
 					{
-						root.add(new Rds<MenuItem>(3, new Link("rootmenu3-menu1-menu1-link1", "http://rootmenu3-menu1-menu1-link1")));
+						rdsBuilder.add(3, new Link("rootmenu3-menu1-menu1-link1", "http://rootmenu3-menu1-menu1-link1"));
 					}
 				}
 			}
 
-			root.add(new Rds<MenuItem>(0, new Link("rootlink2", "http://rootlink2")));
+			rdsBuilder.add(0, new Link("rootlink2", "http://rootlink2"));
 		}
 
 		// print objects and contents
 		System.out.println(root.toString());
-		printContents(root.toContents());
+		{
+			CollectContents<MenuItem> collectContents = new CollectContents<>(root);
+			printContents(collectContents.collect());
+		}
 
 		// collect accessible
-		AccessibleLink accessibleLink = new AccessibleLink(new ArrayList<String>() {
+		CollectAccessibleLink collectAccessibleLink = new CollectAccessibleLink(root, new ArrayList<String>() {
 			{ add("rootmenu1-link1"); }
 			{ add("rootmenu1-link2"); }
 			{ add("rootlink1"); }
 			{ add("rootmenu3-menu1-menu1-link1"); }
 		});
-		Rds<MenuItem> accessibleRoot = root.getAccessible(accessibleLink);
+		Rds<MenuItem> accessibleRoot = collectAccessibleLink.collect();
 
 		// print accessible objects and contents
 		System.out.println(accessibleRoot.toString());
-		printContents(accessibleRoot.toContents());
+		{
+			CollectContents<MenuItem> collectContents = new CollectContents<>(accessibleRoot);
+			printContents(collectContents.collect());
+		}
 	}
 
 	private void test2() {
@@ -85,58 +94,66 @@ public class Main {
 
 		// assemble tree
 		Rds<DiskItem> root = new Rds<>();
+		RdsBuilder<DiskItem> rdsBuilder = new RdsBuilder<>(root);
 		{
-			root.add(new Rds<DiskItem>(0, new Directory("rootdir1")));
+			rdsBuilder.add(0, new Directory("rootdir1"));
 			{
-				root.add(new Rds<DiskItem>(1, new File("rootdir1-file1", 100)));
-				root.add(new Rds<DiskItem>(1, new File("rootdir1-file2", 120)));
+				rdsBuilder.add(1, new File("rootdir1-file1", 100));
+				rdsBuilder.add(1, new File("rootdir1-file2", 120));
 			}
 
-			root.add(new Rds<DiskItem>(0, new Directory("rootdir2")));
+			rdsBuilder.add(0, new Directory("rootdir2"));
 			{
-				root.add(new Rds<DiskItem>(1, new File("rootdir2-file1", 200)));
-				root.add(new Rds<DiskItem>(1, new Directory("rootdir2-dir1")));
+				rdsBuilder.add(1, new File("rootdir2-file1", 200));
+				rdsBuilder.add(1, new Directory("rootdir2-dir1"));
 				{
-					root.add(new Rds<DiskItem>(2, new Directory("rootdir2-dir1-dir1")));
+					rdsBuilder.add(2, new Directory("rootdir2-dir1-dir1"));
 					{
-						root.add(new Rds<DiskItem>(3, new File("rootdir2-dir1-dir1-file1", 290)));
-						root.add(new Rds<DiskItem>(3, new File("rootdir2-dir1-dir1-file2", 400)));
+						rdsBuilder.add(3, new File("rootdir2-dir1-dir1-file1", 290));
+						rdsBuilder.add(3, new File("rootdir2-dir1-dir1-file2", 400));
 					}
 				}
 			}
 
-			root.add(new Rds<DiskItem>(0, new File("rootfile1", 400)));
+			rdsBuilder.add(0, new File("rootfile1", 400));
 
-			root.add(new Rds<DiskItem>(0, new Directory("rootdir3")));
+			rdsBuilder.add(0, new Directory("rootdir3"));
 			{
-				root.add(new Rds<DiskItem>(1, new Directory("rootdir3-dir1")));
+				rdsBuilder.add(1, new Directory("rootdir3-dir1"));
 				{
-					root.add(new Rds<DiskItem>(2, new Directory("rootdir3-dir1-dir1")));
+					rdsBuilder.add(2, new Directory("rootdir3-dir1-dir1"));
 					{
-						root.add(new Rds<DiskItem>(3, new File("rootdir3-dir1-dir1-file1", 120)));
+						rdsBuilder.add(3, new File("rootdir3-dir1-dir1-file1", 120));
 					}
 				}
 			}
 
-			root.add(new Rds<DiskItem>(0, new File("rootfile2", 500)));
+			rdsBuilder.add(0, new File("rootfile2", 500));
 		}
 
 		// print objects and contents
 		System.out.println(root.toString());
-		printContents(root.toContents());
+		{
+			CollectContents<DiskItem> collectContents = new CollectContents<>(root);
+			printContents(collectContents.collect());
+		}
 
 		// collect accessible
-		AccessibleFile accessibleFile = new AccessibleFile(new HashSet<String>() {
+		CollectAccessibleFile collectAccessibleFile = new CollectAccessibleFile(root, new HashSet<String>() {
 			{ add("rootdir1-file1"); }
 			{ add("rootdir1-file2"); }
 			{ add("rootfile1"); }
 			{ add("rootdir3-dir1-dir1-file1"); }
 		}, 300);
-		Rds<DiskItem> accessibleRoot = root.getAccessible(accessibleFile);
+
+		Rds<DiskItem> accessibleRoot = collectAccessibleFile.collect();
 
 		// print accessible objects and contents
 		System.out.println(accessibleRoot.toString());
-		printContents(accessibleRoot.toContents());
+		{
+			CollectContents<DiskItem> collectContents = new CollectContents<>(accessibleRoot);
+			printContents(collectContents.collect());
+		}
 	}
 
 	public static void main(String[] args) {
