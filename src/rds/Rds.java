@@ -24,7 +24,7 @@ public class Rds<T extends IRdsContent> {
 	}
 
 	//
-	// children operation
+	// item and children operation
 	//
 
 	public T getItem() {
