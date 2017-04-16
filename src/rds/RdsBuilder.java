@@ -18,11 +18,11 @@ public class RdsBuilder<T extends IRdsContent> {
 	private void add(Rds<T> rdsParent, int level,  T item) {
 		if (level == 0) {
 			rdsParent.getChildren().add(new Rds<T>(item));
-		} else 	if (0 < level && rdsParent.getChildren().size() != 0) {
+		} else 	if (0 < level) {
 			List<Rds<T>> children = rdsParent.getChildren();
 			if (children.size() != 0) {
 				Rds<T> rdsLastChild = children.get(children.size() - 1);
-				if (rdsLastChild != null && !rdsLastChild.getItem().isLeaf()) {
+				if (!rdsLastChild.getItem().isLeaf()) {
 					this.add(rdsLastChild, --level, item);
 				}
 			}
