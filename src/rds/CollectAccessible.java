@@ -16,19 +16,28 @@ public abstract class CollectAccessible<T extends IRdsContent> {
 		if (rds.getItem().isLeaf()) {
 			return this.isAccessible(rds.getItem()) ? rds : null;
 		} else {
-			return this.collectInner(rds,  null);
+			Rds<T> rdsNew = null;
+			if (this.isAddEmptyInternalNode() && this.isAccessible(rds.getItem())) {
+				rdsNew = new Rds<>(rds.getItem());
+			}
+			return this.collectInner(rds,  rdsNew);
 		}
 	}
 
 	private Rds<T> collectInner(Rds<T> rdsParent, Rds<T> valueDefault) {
-		Rds<T> rdsRoot = new Rds<>(rdsParent.getItem());
+		Rds<T> rdsParentNew = new Rds<>(rdsParent.getItem());
 		for (Rds<T> crds : rdsParent.getChildren()) {
 			Rds<T> acsRds = this.collectChild(crds);
 			if (acsRds != null) {
-				rdsRoot.getChildren().add(acsRds);
+				rdsParentNew.getChildren().add(acsRds);
 			}
 		}
-		return (rdsRoot.getChildren().size() == 0) ? valueDefault : rdsRoot;
+
+		return (rdsParentNew.getChildren().size() == 0) ? valueDefault : rdsParentNew;
+	}
+
+	protected boolean isAddEmptyInternalNode() {
+		return false;
 	}
 
 	protected abstract boolean isAccessible(T item);
